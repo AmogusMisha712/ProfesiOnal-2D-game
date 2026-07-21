@@ -18,12 +18,28 @@ velocityY = 0
 
 onGround = False
 
-
 pixels = np.zeros((800, 600, 3), dtype=np.uint8)
 running = True
 
-player = Player(300, 50, 50, 50, (235, 56, 56))
-platform = Rectangle(100, 450, 600, 50)
+player = Player(750//2, 50, 50, 50, (235, 56, 56))
+platforms = (
+        Rectangle(100, 450, 600, 50),
+        Rectangle(800, 400, 400, 50),
+        Rectangle(-600, 2000, 400, 50),
+        
+        Rectangle(-550, 1750, 25, 125),
+        Rectangle(-525, 1750, 50, 25),
+        Rectangle(-525, 1800, 50, 25),
+        Rectangle(-500, 1825, 25, 25),
+        Rectangle(-525, 1850, 50, 25),
+        
+        Rectangle(-450, 1750, 75, 25),
+        Rectangle(-400, 1750, 25, 125)
+    )
+
+
+camera_x = 0
+camera_y = 0
 
 
 def CheckCollision(player, platform):
@@ -58,8 +74,8 @@ while running:
         
     if (velocityX > MAX_VELOCITY_X):
         velocityX = MAX_VELOCITY_X
-    elif (velocityX < -MAX_VELOCITY_X):
-        velocityX = -MAX_VELOCITY_X
+    elif (velocityX < - MAX_VELOCITY_X):
+        velocityX = - MAX_VELOCITY_X
     
     
 
@@ -67,15 +83,24 @@ while running:
 
     player.move(pixels, int(velocityX), int(velocityY))
     
-    if CheckCollision(player, platform):
-        player.y = platform.borders[0] - player.sizeY
-        player.updateBorders()
-        velocityY = 0
+    for platform in platforms:
+        if CheckCollision(player, platform):
+            player.y = platform.borders[0] - player.sizeY
+            player.updateBorders()
+            velocityY = 0
+            break
         
-    print(velocityX, velocityY)
+    camera_x = player.x - 750//2
+    camera_y = player.y - 550//2
+        
+    #print(velocityX, velocityY)
+    #print(camera_x, camera_y)
+    #print(onGround)
     
-    platform.draw(pixels)
-    player.draw(pixels)
+    for platform in platforms:
+        platform.draw(pixels, camera_x, camera_y)
+    
+    player.draw(pixels, camera_x, camera_y)
     
     velocityY += GRAVITY
     
