@@ -28,11 +28,11 @@ platform = Rectangle(100, 450, 600, 50)
 
 def CheckCollision(player, platform):
     global velocityY, onGround
-    # Используем правильный порядок borders: (верх, право, низ, лево)
-    if (player.borders[3] < platform.borders[1] and   # лево < право
-        player.borders[1] > platform.borders[3] and   # право > лево
-        player.borders[0] < platform.borders[2] and   # верх < низ
-        player.borders[2] > platform.borders[0]):     # низ > верх
+
+    if (player.borders[3] < platform.borders[1] and
+        player.borders[1] > platform.borders[3] and
+        player.borders[0] < platform.borders[2] and
+        player.borders[2] > platform.borders[0]):  
         velocityY = 0
         onGround = True
         return True
@@ -68,7 +68,6 @@ while running:
     player.move(pixels, int(velocityX), int(velocityY))
     
     if CheckCollision(player, platform):
-        # Ставим игрока на верхнюю границу платформы
         player.y = platform.borders[0] - player.sizeY
         player.updateBorders()
         velocityY = 0
@@ -85,13 +84,9 @@ while running:
     elif (velocityX < 0):
         velocityX += FRICTION
         
-    #if (velocityX % FRICTION < FRICTION):
-    #    velocityX = 0
-
-    # Преобразуем массив NumPy обратно в Surface и выводим на экран
     pygame.surfarray.blit_array(screen, pixels)
     pygame.display.flip()
-    clock.tick(60) # Ограничиваем до 60 FPS
+    clock.tick(60)
 
 pygame.quit()
 
